@@ -38,17 +38,11 @@ def score_tokens(markets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         tokenomics_norm = circ_ratio
 
         # Developer Activity: Use GitHub stats if available
-        gh_commits = m.get("gh_commits_30d")
-        gh_contributors = m.get("gh_contributors_90d")
-        
-        if gh_commits is not None and gh_contributors is not None:
-            # Score based on commits (>100 commits/month = full credit) and contributors (>50 = full credit)
-            commits_score = _clamp01(gh_commits / 100.0)
-            contributors_score = _clamp01(gh_contributors / 50.0)
-            # Weighted average: 60% commits activity, 40% contributor diversity
-            dev_norm = (commits_score * 0.6) + (contributors_score * 0.4)
-        else:
-            dev_norm = 0.5  # Neutral if no GitHub data
+        commits_30d = float(m.get("gh_commits_30d") or 0.0)
+        contrib_90d = float(m.get("gh_contributors_90d") or 0.0)
+        commits_norm = max(0.0, min(1.0, commits_30d / 200.0))
+        contrib_norm = max(0.0, min(1.0, contrib_90d / 20.0))
+        dev_norm = 0.6 * commits_norm + 0.4 * contrib_norm
         
         # Placeholders for v2 (neutral 0.5). Later, wire real data.
         audit_norm = 0.5
@@ -95,7 +89,7 @@ def score_tokens(markets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
                 "dev_activity": {
                     "gh_commits_30d": m.get("gh_commits_30d"),
                     "gh_contributors_90d": m.get("gh_contributors_90d"),
-                    "has_github_data": gh_commits is not None,
+                    "has_github_data": m.get("gh_commits_30d") is not None,
                     "norm": round(dev_norm, 4)
                 },
                 "notes": "Audit, community, governance are neutral in v2; wire real sources later."

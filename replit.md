@@ -54,7 +54,8 @@ The SignalStrike score (0-100) uses weighted pillars:
 - **Tokenomics Transparency (20%)**: Circulating vs total supply ratio
 - **Dev Activity (15%)**: **NOW LIVE** - GitHub commits (60%) + contributors (40%)
   - Uses real data from GitHub API for 20 major cryptocurrencies
-  - Scores: >100 commits/month = 100%, >50 contributors = 100%
+  - Scores: >200 commits/month = 100%, >20 contributors = 100%
+  - Formula: `0.6 * (commits_30d/200) + 0.4 * (contrib_90d/20)`
 - **Audit/Security (15%)**: Placeholder (neutral 50) - coming in v2
 - **Community Health (15%)**: Placeholder (neutral 50) - coming in v2
 - **Gov/Disclosure (10%)**: Placeholder (neutral 50) - coming in v2
